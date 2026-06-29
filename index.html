@@ -176,6 +176,26 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
 .gap-20{gap:20px}.mt-16{margin-top:16px}.mt-20{margin-top:20px}.mb-16{margin-bottom:16px}
 .mb-20{margin-bottom:20px}.flex-1{flex:1;min-width:0}.mono{font-family:'JetBrains Mono',monospace}
 .text-center{text-align:center}
+.audio-panel{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.audio-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--glass-b);background:rgba(255,255,255,.03);
+  color:var(--t2);font-size:13px;cursor:pointer;transition:var(--tr);font-family:'Inter',sans-serif;font-weight:500}
+.audio-btn:hover{border-color:var(--a8);color:var(--a8)}
+.audio-btn.active{background:rgba(6,182,212,.15);border-color:var(--a8);color:var(--a8);box-shadow:0 0 12px rgba(6,182,212,.2)}
+.vol-slider{-webkit-appearance:none;width:120px;height:4px;border-radius:2px;background:var(--glass-b);outline:none;margin:0 8px}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--a8);cursor:pointer}
+.streak-grid{display:grid;grid-template-rows:repeat(7,1fr);grid-auto-flow:column;grid-auto-columns:14px;gap:3px;overflow-x:auto;padding:8px 0}
+.streak-cell{width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.04);transition:var(--tr)}
+.streak-cell.l1{background:rgba(16,185,129,.2)}
+.streak-cell.l2{background:rgba(16,185,129,.45)}
+.streak-cell.l3{background:rgba(16,185,129,.7)}
+.streak-cell.today{outline:2px solid var(--a4);outline-offset:1px}
+.streak-stat{text-align:center}
+.streak-stat .stat-val{font-size:36px}
+.snippet-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--glass-b);border-radius:var(--r);padding:18px;margin-bottom:12px;transition:var(--tr)}
+.snippet-card:hover{border-color:var(--glass-h)}
+.snippet-card pre{background:var(--bg-base);border:1px solid var(--glass-b);border-radius:var(--rs);
+  padding:14px;margin:12px 0 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.5;color:var(--a8)}
 </style>
 </head>
 <body>
@@ -219,6 +239,30 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
       <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
         <path d='M9 11l3 3L22 4'/><path d='M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11'/></svg>
       <span class='tip'>Task Hub</span></div>
+    <div class='nav-item' data-sec='streak'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M12 2c1 3 3.5 5 3.5 8.5a3.5 3.5 0 11-7 0C8.5 7 11 5 12 2z'/></svg>
+      <span class='tip'>Code Streak</span></div>
+    <div class='nav-item' data-sec='cgpa'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5'/></svg>
+      <span class='tip'>CGPA Predictor</span></div>
+    <div class='nav-item' data-sec='snippets'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M16 18l6-6-6-6'/><path d='M8 6l-6 6 6 6'/></svg>
+      <span class='tip'>Snippet Vault</span></div>
+    <div class='nav-item' data-sec='exams'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <rect x='3' y='4' width='18' height='18' rx='2'/><line x1='16' y1='2' x2='16' y2='6'/><line x1='8' y1='2' x2='8' y2='6'/><line x1='3' y1='10' x2='21' y2='10'/></svg>
+      <span class='tip'>Exam Countdown</span></div>
+    <div class='nav-item' data-sec='portfolio'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <rect x='2' y='7' width='20' height='14' rx='2'/><path d='M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2'/></svg>
+      <span class='tip'>Portfolio</span></div>
+    <div class='nav-item' data-sec='settings'>
+      <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+        <path d='M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z'/><circle cx='12' cy='12' r='3'/></svg>
+      <span class='tip'>Settings</span></div>
   </div>
 </nav>
 <main class='main'>
@@ -297,6 +341,18 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
     <div class='flex gap-16 mt-20 justify-center' style='width:100%;max-width:300px'>
       <button class='btn flex-1 justify-center' id='f-btn' onclick='FocusTimer.toggle()' style='padding:14px;font-size:16px'>&#x25B6; Start</button>
       <button class='btn btn-ghost' onclick='FocusTimer.reset()' style='padding:14px;font-size:16px'>&#x21BA;</button>
+    </div>
+    <div class='audio-panel'>
+      <button class='audio-btn' onclick='Ambient.toggle("rain",this)'>&#x1F327; Rain</button>
+      <button class='audio-btn' onclick='Ambient.toggle("cafe",this)'>&#x2615; Caf\u00e9</button>
+      <button class='audio-btn' onclick='Ambient.toggle("wind",this)'>&#x1F343; Wind</button>
+      <button class='audio-btn' onclick='Ambient.toggle("fire",this)'>&#x1F525; Fire</button>
+      <button class='audio-btn' onclick='Ambient.toggle("waves",this)'>&#x1F30A; Waves</button>
+    </div>
+    <div class='flex items-center justify-center mt-16' style='gap:8px'>
+      <span style='font-size:12px;color:var(--t3)'>&#x1F509;</span>
+      <input type='range' class='vol-slider' id='amb-vol' min='0' max='100' value='50' oninput='Ambient.setVol(this.value)'>
+      <span style='font-size:12px;color:var(--t3)'>&#x1F50A;</span>
     </div>
   </div>
 </div>
@@ -463,6 +519,159 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
     </div>
   </div>
   <div id='task-list'></div>
+</div>
+<div id='sec-streak' class='section'>
+  <h1 class='sec-title'>Code Streak</h1>
+  <p class='sec-sub'>Track your daily study habit with a GitHub-style contribution grid</p>
+  <div class='card mb-20' style='text-align:center;padding:30px'>
+    <button class='btn' onclick='Streak.markToday()' style='font-size:16px;padding:14px 40px'>
+      &#x2705; I Studied Today</button>
+    <p id='streak-msg' style='color:var(--t3);font-size:13px;margin-top:12px'></p>
+  </div>
+  <div class='g3 mb-20'>
+    <div class='card streak-stat'>
+      <div class='stat-lbl'>Current Streak</div>
+      <div class='stat-val' id='str-cur' style='color:var(--a4)'>0</div>
+      <div style='color:var(--t3);font-size:12px'>days</div></div>
+    <div class='card streak-stat'>
+      <div class='stat-lbl'>Longest Streak</div>
+      <div class='stat-val' id='str-max' style='color:var(--a5)'>0</div>
+      <div style='color:var(--t3);font-size:12px'>days</div></div>
+    <div class='card streak-stat'>
+      <div class='stat-lbl'>Total Days</div>
+      <div class='stat-val' id='str-tot' style='color:var(--a3)'>0</div>
+      <div style='color:var(--t3);font-size:12px'>logged</div></div>
+  </div>
+  <div class='card'>
+    <h3 style='font-size:14px;font-weight:700;margin-bottom:12px'>Activity (Past Year)</h3>
+    <div class='streak-grid' id='streak-grid'></div>
+    <div class='flex justify-between mt-16' style='font-size:11px;color:var(--t3)'>
+      <span>Less</span>
+      <div class='flex gap-8'>
+        <div style='width:14px;height:14px;border-radius:3px;background:rgba(255,255,255,.04)'></div>
+        <div style='width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.2)'></div>
+        <div style='width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.45)'></div>
+        <div style='width:14px;height:14px;border-radius:3px;background:rgba(16,185,129,.7)'></div>
+      </div>
+      <span>More</span>
+    </div>
+  </div>
+</div>
+<div id='sec-cgpa' class='section'>
+  <h1 class='sec-title'>CGPA Predictor</h1>
+  <p class='sec-sub'>Calculate your cumulative GPA and predict what you need to hit your target</p>
+  <div class='card mb-20'>
+    <h3 style='font-size:16px;font-weight:700;margin-bottom:14px'>Previous Semesters</h3>
+    <div class='g3 gap-12 mb-16' style='align-items:end'>
+      <div><label>Semester</label><input type='text' id='cgpa-sem' placeholder='e.g. Sem 1'></div>
+      <div><label>Credits</label><input type='number' id='cgpa-cr' placeholder='24' min='1'></div>
+      <div class='flex gap-12' style='align-items:end'>
+        <div class='flex-1'><label>SGPA</label><input type='number' id='cgpa-sgpa' placeholder='8.5' min='0' max='10' step='0.01'></div>
+        <button class='btn' onclick='CGPACalc.addSem()'>&#x2795;</button>
+      </div>
+    </div>
+    <div id='cgpa-list'></div>
+  </div>
+  <div class='g2 mb-20'>
+    <div class='card' style='text-align:center;padding:30px'>
+      <div class='stat-lbl'>Current CGPA</div>
+      <div class='stat-val' id='cgpa-cur' style='color:var(--a3);font-size:48px'>--</div>
+    </div>
+    <div class='card' style='text-align:center;padding:30px'>
+      <div class='stat-lbl'>Total Credits</div>
+      <div class='stat-val' id='cgpa-tcr' style='color:var(--a5);font-size:48px'>0</div>
+    </div>
+  </div>
+  <div class='card'>
+    <h3 style='font-size:16px;font-weight:700;margin-bottom:14px'>Predict Required SGPA</h3>
+    <div class='g3 gap-12' style='align-items:end'>
+      <div><label>Target CGPA</label><input type='number' id='cgpa-target' placeholder='8.5' min='0' max='10' step='0.01'></div>
+      <div><label>Next Sem Credits</label><input type='number' id='cgpa-ncr' placeholder='24' min='1'></div>
+      <button class='btn' onclick='CGPACalc.predict()' style='padding:10px 20px'>&#x1F4CA; Predict</button>
+    </div>
+    <div id='cgpa-result' style='margin-top:20px'></div>
+  </div>
+</div>
+<div id='sec-snippets' class='section'>
+  <h1 class='sec-title'>Code Snippet Vault</h1>
+  <p class='sec-sub'>Save, search, and reuse your favorite code blocks</p>
+  <div class='card mb-20'>
+    <div class='g3 gap-12 mb-16' style='align-items:end'>
+      <div><label>Title</label><input type='text' id='snip-title' placeholder='e.g. Fast I/O Template'></div>
+      <div><label>Language</label>
+        <select id='snip-lang'>
+          <option value='C'>C</option><option value='C++'>C++</option>
+          <option value='Python'>Python</option><option value='Java'>Java</option>
+          <option value='JavaScript'>JavaScript</option><option value='Other'>Other</option>
+        </select></div>
+      <button class='btn' onclick='Snip.add()' style='padding:10px 20px'>&#x2795; Save Snippet</button>
+    </div>
+    <label>Code</label>
+    <textarea id='snip-code' rows='6' placeholder='Paste your code here...' style='font-family:JetBrains Mono,monospace;font-size:13px;resize:vertical'></textarea>
+  </div>
+  <div class='flex gap-12 mb-20'>
+    <input type='text' id='snip-search' placeholder='&#x1F50D; Search snippets...' oninput='Snip.render()' style='flex:1'>
+  </div>
+  <div id='snip-list'></div>
+</div>
+<div id='sec-exams' class='section'>
+  <h1 class='sec-title'>Exam Countdown</h1>
+  <p class='sec-sub'>Track exam dates and daily study pace to stay on schedule</p>
+  <div class='card mb-20'>
+    <div class='g4 gap-12' style='align-items:end'>
+      <div><label>Subject</label><input type='text' id='exam-sub' placeholder='e.g. Data Structures'></div>
+      <div><label>Exam Date</label><input type='date' id='exam-date'></div>
+      <div><label>Total Chapters</label><input type='number' id='exam-total' placeholder='12' min='1'></div>
+      <div class='flex gap-12' style='align-items:end'>
+        <div class='flex-1'><label>Done</label><input type='number' id='exam-done' placeholder='0' min='0'></div>
+        <button class='btn' onclick='Exams.add()'>&#x2795;</button>
+      </div>
+    </div>
+  </div>
+  <div id='exam-list'></div>
+</div>
+<div id='sec-portfolio' class='section'>
+  <h1 class='sec-title'>Project Portfolio</h1>
+  <p class='sec-sub'>Catalog your engineering projects for quick resume reference</p>
+  <div class='card mb-20'>
+    <div class='g2 gap-12 mb-16'>
+      <div><label>Project Name</label><input type='text' id='proj-name' placeholder='e.g. PerformanceIndexx Dashboard'></div>
+      <div><label>Tech Stack</label><input type='text' id='proj-tech' placeholder='e.g. C, HTML, JavaScript'></div>
+    </div>
+    <div class='g2 gap-12 mb-16'>
+      <div><label>GitHub / Live Link</label><input type='text' id='proj-link' placeholder='https://github.com/...'></div>
+      <div><label>Status</label>
+        <select id='proj-status'>
+          <option value='Completed'>Completed</option><option value='In Progress'>In Progress</option>
+          <option value='Planned'>Planned</option>
+        </select></div>
+    </div>
+    <label>Key Features / Description</label>
+    <textarea id='proj-desc' rows='3' placeholder='Brief description of the project...' style='resize:vertical'></textarea>
+    <button class='btn mt-16' onclick='Portfolio.add()' style='width:100%;justify-content:center'>&#x2795; Add Project</button>
+  </div>
+  <div id='proj-list'></div>
+</div>
+<div id='sec-settings' class='section'>
+  <h1 class='sec-title'>Settings & Backup</h1>
+  <p class='sec-sub'>Manage your data and dashboard settings</p>
+  <div class='card mb-20'>
+    <h3 style='font-size:16px;font-weight:700;margin-bottom:12px'>Data Backup</h3>
+    <p style='color:var(--t2);font-size:13px;line-height:1.6;margin-bottom:20px'>
+      All your data is stored locally in this browser. To sync with your phone or another laptop, simply export your data here and import it on the other device.
+    </p>
+    <div class='flex gap-12' style='flex-wrap:wrap'>
+      <button class='btn flex-1' onclick='Backup.exportData()' style='justify-content:center;padding:12px'>&#x1F4E4; Export Backup (.json)</button>
+      <div class='flex-1 flex gap-8' style='align-items:center'>
+        <input type='file' id='import-file' accept='.json' style='font-size:13px;width:100%'>
+        <button class='btn btn-ghost' onclick='Backup.importData()' style='padding:12px'>&#x1F4E5; Import</button>
+      </div>
+    </div>
+    <div class='mt-20 pt-20' style='border-top:1px solid rgba(255,255,255,.04)'>
+      <h3 style='font-size:14px;color:var(--a6);font-weight:700;margin-bottom:12px'>Danger Zone</h3>
+      <button class='btn' onclick='Backup.wipeAll()' style='background:rgba(239,68,68,.1);color:var(--a6);border-color:rgba(239,68,68,.3)'>&#x1F5D1; Wipe All Data</button>
+    </div>
+  </div>
 </div>
 <div id='pix-modal' class='modal-overlay' style='display:none'>
   <div class='modal-card'>
@@ -1138,6 +1347,326 @@ var FocusTimer={
   }
 };
 
+/* === Ambient Audio === */
+var Ambient={
+  ctx:null, current:null, activeBtn:null, gainNode:null,
+  noise:function(type){
+    if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();
+    var ctx=this.ctx, bufSize=2*ctx.sampleRate;
+    var buf=ctx.createBuffer(1,bufSize,ctx.sampleRate);
+    var d=buf.getChannelData(0);
+    var i,b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(i=0;i<bufSize;i++){
+      var w=Math.random()*2-1;
+      if(type==='rain'){b0=0.99886*b0+w*0.0555179;b1=0.99332*b1+w*0.0750759;b2=0.969*b2+w*0.153852;d[i]=(b0+b1+b2+w*0.5362)*0.11;}
+      else if(type==='cafe'){b0=0.998*b0+w*0.02;d[i]=(b0+w*0.1)*0.4;}
+      else if(type==='wind'){d[i]=w*0.3*Math.sin(i/ctx.sampleRate*0.3);}
+      else if(type==='fire'){d[i]=w*(Math.random()>0.98?0.6:0.08);}
+      else if(type==='waves'){d[i]=w*0.25*(0.5+0.5*Math.sin(i/ctx.sampleRate*0.5));}
+      else{d[i]=w*0.2;}
+    }
+    return buf;
+  },
+  toggle:function(type,btn){
+    if(this.current){this.current.stop();this.current=null;}
+    if(this.activeBtn){this.activeBtn.classList.remove('active');}
+    if(this.activeBtn===btn){this.activeBtn=null;return;}
+    if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();
+    this.gainNode=this.ctx.createGain();
+    this.gainNode.gain.value=($('amb-vol').value||50)/100;
+    this.gainNode.connect(this.ctx.destination);
+    var src=this.ctx.createBufferSource();
+    src.buffer=this.noise(type);
+    src.loop=true;
+    src.connect(this.gainNode);
+    src.start();
+    this.current=src;
+    btn.classList.add('active');
+    this.activeBtn=btn;
+  },
+  setVol:function(v){if(this.gainNode)this.gainNode.gain.value=v/100;}
+};
+
+/* === Code Streak === */
+var Streak={
+  data:[],
+  init:function(){this.data=loadD('streak')||[];this.render();},
+  todayStr:function(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();},
+  markToday:function(){
+    var t=this.todayStr();
+    if(this.data.indexOf(t)===-1){this.data.push(t);this.save();this.render();$('streak-msg').textContent='Great job! Keep the streak alive!';}
+    else{$('streak-msg').textContent='Already logged today. Come back tomorrow!';}
+  },
+  calcStreak:function(){
+    if(!this.data.length)return{cur:0,max:0};
+    var sorted=this.data.slice().sort();
+    var cur=0,max=0,streak=1;
+    for(var i=sorted.length-1;i>0;i--){
+      var d1=new Date(sorted[i]),d0=new Date(sorted[i-1]);
+      var diff=(d1-d0)/(1000*60*60*24);
+      if(diff===1){streak++;}else{if(i===sorted.length-1||streak>1)max=Math.max(max,streak);streak=1;}
+    }
+    max=Math.max(max,streak);
+    /* current streak from today */
+    var today=new Date(this.todayStr());
+    cur=0;
+    for(var j=0;j<366;j++){
+      var check=new Date(today);check.setDate(check.getDate()-j);
+      var cs=check.getFullYear()+'-'+(check.getMonth()+1<10?'0':'')+(check.getMonth()+1)+'-'+(check.getDate()<10?'0':'')+check.getDate();
+      if(sorted.indexOf(cs)!==-1)cur++;else break;
+    }
+    return{cur:cur,max:max};
+  },
+  render:function(){
+    var s=this.calcStreak();
+    $('str-cur').textContent=s.cur;
+    $('str-max').textContent=s.max;
+    $('str-tot').textContent=this.data.length;
+    /* grid */
+    var grid=$('streak-grid');grid.innerHTML='';
+    var today=new Date();
+    for(var i=364;i>=0;i--){
+      var d=new Date(today);d.setDate(d.getDate()-i);
+      var ds=d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+      var cell=document.createElement('div');
+      cell.className='streak-cell';
+      if(this.data.indexOf(ds)!==-1)cell.classList.add('l3');
+      if(i===0)cell.classList.add('today');
+      cell.title=ds;
+      grid.appendChild(cell);
+    }
+  },
+  save:function(){saveD('streak',this.data);}
+};
+
+/* === CGPA Predictor === */
+var CGPACalc={
+  data:[],
+  init:function(){this.data=loadD('cgpa')||[];this.render();},
+  addSem:function(){
+    var name=$('cgpa-sem').value.trim()||'Sem '+(this.data.length+1);
+    var cr=parseFloat($('cgpa-cr').value);
+    var sg=parseFloat($('cgpa-sgpa').value);
+    if(!cr||!sg||sg>10||sg<0){alert('Enter valid credits and SGPA (0-10).');return;}
+    this.data.push({name:name,credits:cr,sgpa:sg});
+    $('cgpa-sem').value='';$('cgpa-cr').value='';$('cgpa-sgpa').value='';
+    this.save();this.render();
+  },
+  rm:function(i){this.data.splice(i,1);this.save();this.render();},
+  calc:function(){
+    if(!this.data.length)return{cgpa:0,totalCr:0};
+    var sumCr=0,sumPts=0;
+    this.data.forEach(function(s){sumCr+=s.credits;sumPts+=s.sgpa*s.credits;});
+    return{cgpa:sumPts/sumCr,totalCr:sumCr,sumPts:sumPts};
+  },
+  predict:function(){
+    var target=parseFloat($('cgpa-target').value);
+    var ncr=parseFloat($('cgpa-ncr').value);
+    if(!target||!ncr){alert('Enter target CGPA and next semester credits.');return;}
+    var c=this.calc();
+    var needed=(target*(c.totalCr+ncr)-c.sumPts)/ncr;
+    var res=$('cgpa-result');
+    if(needed>10){res.innerHTML='<div class="card" style="text-align:center;padding:20px;border-color:var(--a6)"><p style="color:var(--a6);font-size:16px;font-weight:700">Target not achievable.</p><p style="color:var(--t3);font-size:13px;margin-top:6px">You would need '+needed.toFixed(2)+' SGPA, which exceeds the maximum of 10.</p></div>';}
+    else if(needed<0){res.innerHTML='<div class="card" style="text-align:center;padding:20px;border-color:var(--a4)"><p style="color:var(--a4);font-size:16px;font-weight:700">You already exceed your target!</p></div>';}
+    else{res.innerHTML='<div class="card" style="text-align:center;padding:20px;border-color:var(--a3)"><p style="font-size:14px;color:var(--t2)">To achieve <b style="color:var(--a5)">'+target.toFixed(2)+'</b> CGPA, you need</p><p style="font-size:48px;font-weight:900;color:var(--a3);margin:8px 0">'+needed.toFixed(2)+'</p><p style="font-size:14px;color:var(--t2)">SGPA this semester ('+ncr+' credits)</p></div>';}
+  },
+  render:function(){
+    var c=this.calc();
+    $('cgpa-cur').textContent=c.totalCr?c.cgpa.toFixed(2):'--';
+    $('cgpa-tcr').textContent=c.totalCr;
+    var h='';
+    this.data.forEach(function(s,i){
+      h+='<div class="flex justify-between items-center" style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)">';
+      h+='<span style="font-weight:600">'+esc(s.name)+'</span>';
+      h+='<span style="color:var(--t2);font-size:13px">'+s.credits+' cr \u2022 SGPA '+s.sgpa.toFixed(2)+'</span>';
+      h+='<button class="btn btn-sm btn-ghost" onclick="CGPACalc.rm('+i+')" style="padding:4px 8px">\u2715</button>';
+      h+='</div>';
+    });
+    $('cgpa-list').innerHTML=h;
+  },
+  save:function(){saveD('cgpa',this.data);}
+};
+
+/* === Code Snippet Vault === */
+var Snip={
+  data:[],
+  init:function(){this.data=loadD('snippets')||[];this.render();},
+  add:function(){
+    var title=$('snip-title').value.trim();
+    var lang=$('snip-lang').value;
+    var code=$('snip-code').value;
+    if(!title||!code){alert('Enter a title and code.');return;}
+    this.data.unshift({id:Date.now(),title:title,lang:lang,code:code});
+    $('snip-title').value='';$('snip-code').value='';
+    this.save();this.render();
+  },
+  copy:function(id){
+    var s=this.data.find(function(x){return x.id===id;});
+    if(s)navigator.clipboard.writeText(s.code).then(function(){alert('Copied to clipboard!');});
+  },
+  rm:function(id){
+    this.data=this.data.filter(function(x){return x.id!==id;});
+    this.save();this.render();
+  },
+  render:function(){
+    var q=($('snip-search')?$('snip-search').value:'').toLowerCase();
+    var filtered=this.data.filter(function(s){
+      return s.title.toLowerCase().indexOf(q)!==-1||s.lang.toLowerCase().indexOf(q)!==-1;
+    });
+    var h='';
+    filtered.forEach(function(s){
+      h+='<div class="snippet-card">';
+      h+='<div class="flex justify-between items-center">';
+      h+='<div><span style="font-weight:700;font-size:15px">'+esc(s.title)+'</span> <span class="badge badge-cyan" style="margin-left:8px">'+esc(s.lang)+'</span></div>';
+      h+='<div class="flex gap-8">';
+      h+='<button class="btn btn-sm btn-ghost" onclick="Snip.copy('+s.id+')">&#x1F4CB; Copy</button>';
+      h+='<button class="btn btn-sm btn-ghost" onclick="Snip.rm('+s.id+')" style="padding:6px 10px">\u2715</button>';
+      h+='</div></div>';
+      h+='<pre>'+esc(s.code)+'</pre>';
+      h+='</div>';
+    });
+    if(!filtered.length)h='<div class="card text-center" style="padding:50px;color:var(--t3)"><p>No snippets yet. Save your first code snippet above.</p></div>';
+    $('snip-list').innerHTML=h;
+  },
+  save:function(){saveD('snippets',this.data);}
+};
+
+/* === Exam Countdown === */
+var Exams={
+  data:[],
+  init:function(){this.data=loadD('exams')||[];this.render();setInterval(this.render.bind(this),60000);},
+  add:function(){
+    var sub=$('exam-sub').value.trim();
+    var date=$('exam-date').value;
+    var total=parseInt($('exam-total').value)||0;
+    var done=parseInt($('exam-done').value)||0;
+    if(!sub||!date||!total){alert('Fill in subject, date, and total chapters.');return;}
+    this.data.push({id:Date.now(),sub:sub,date:date,total:total,done:done});
+    $('exam-sub').value='';$('exam-date').value='';$('exam-total').value='';$('exam-done').value='';
+    this.save();this.render();
+  },
+  updDone:function(id,v){
+    var e=this.data.find(function(x){return x.id===id;});
+    if(e){e.done=Math.min(Math.max(0,parseInt(v)||0),e.total);this.save();this.render();}
+  },
+  rm:function(id){this.data=this.data.filter(function(x){return x.id!==id;});this.save();this.render();},
+  render:function(){
+    var now=new Date();var h='';
+    this.data.forEach(function(e){
+      var ed=new Date(e.date+'T23:59:59');
+      var diff=ed-now;
+      var days=Math.max(0,Math.ceil(diff/(1000*60*60*24)));
+      var left=e.total-e.done;
+      var pace=days>0?(left/days).toFixed(1):'N/A';
+      var col=days<=0?'var(--a6)':days<=3?'var(--a5)':days<=7?'var(--a5)':'var(--a4)';
+      var urgBg=days<=0?'rgba(239,68,68,.1)':days<=3?'rgba(245,158,11,.08)':'transparent';
+      h+='<div class="card mb-16" style="border-left:3px solid '+col+';background:'+urgBg+'">';
+      h+='<div class="flex justify-between items-center" style="flex-wrap:wrap;gap:12px">';
+      h+='<div><span style="font-size:16px;font-weight:700">'+esc(e.sub)+'</span>';
+      h+=' <span class="badge" style="margin-left:8px;background:rgba(255,255,255,.05);color:'+col+'">'+new Date(e.date).toLocaleDateString()+'</span></div>';
+      h+='<button class="btn btn-sm btn-ghost" onclick="Exams.rm('+e.id+')" style="padding:4px 8px">\u2715</button>';
+      h+='</div>';
+      h+='<div class="g3 mt-16" style="text-align:center">';
+      h+='<div><div class="stat-lbl">Days Left</div><div style="font-size:28px;font-weight:800;color:'+col+'">'+days+'</div></div>';
+      h+='<div><div class="stat-lbl">Chapters Left</div><div style="font-size:28px;font-weight:800;color:var(--t1)">'+left+'/'+e.total+'</div></div>';
+      h+='<div><div class="stat-lbl">Pace Needed</div><div style="font-size:28px;font-weight:800;color:var(--a3)">'+pace+'</div><div style="font-size:11px;color:var(--t3)">chapters/day</div></div>';
+      h+='</div>';
+      h+='<div class="flex items-center gap-12 mt-16"><label style="font-size:12px;white-space:nowrap">Chapters Done:</label>';
+      h+='<input type="number" value="'+e.done+'" min="0" max="'+e.total+'" style="width:80px;padding:6px 10px" onchange="Exams.updDone('+e.id+',this.value)">';
+      h+='<div class="pbar flex-1"><div class="pfill" style="width:'+(e.total?e.done/e.total*100:0)+'%25"></div></div></div>';
+      h+='</div>';
+    });
+    if(!this.data.length)h='<div class="card text-center" style="padding:50px;color:var(--t3)"><p>No exams added yet. Add your first exam above.</p></div>';
+    $('exam-list').innerHTML=h;
+  },
+  save:function(){saveD('exams',this.data);}
+};
+
+/* === Project Portfolio === */
+var Portfolio={
+  data:[],
+  init:function(){this.data=loadD('portfolio')||[];this.render();},
+  add:function(){
+    var name=$('proj-name').value.trim();
+    var tech=$('proj-tech').value.trim();
+    var link=$('proj-link').value.trim();
+    var status=$('proj-status').value;
+    var desc=$('proj-desc').value.trim();
+    if(!name){alert('Enter a project name.');return;}
+    this.data.unshift({id:Date.now(),name:name,tech:tech,link:link,status:status,desc:desc});
+    $('proj-name').value='';$('proj-tech').value='';$('proj-link').value='';$('proj-desc').value='';
+    this.save();this.render();
+  },
+  copyForResume:function(id){
+    var p=this.data.find(function(x){return x.id===id;});
+    if(!p)return;
+    var txt=p.name+'\n'+'Tech: '+p.tech+'\n'+(p.link?'Link: '+p.link+'\n':'')+(p.desc?p.desc+'\n':'');
+    navigator.clipboard.writeText(txt).then(function(){alert('Copied to clipboard!');});
+  },
+  rm:function(id){this.data=this.data.filter(function(x){return x.id!==id;});this.save();this.render();},
+  render:function(){
+    var h='';
+    this.data.forEach(function(p){
+      var stCol=p.status==='Completed'?'var(--a4)':p.status==='In Progress'?'var(--a5)':'var(--t3)';
+      h+='<div class="card mb-16">';
+      h+='<div class="flex justify-between items-center" style="flex-wrap:wrap;gap:8px">';
+      h+='<div><span style="font-size:17px;font-weight:700">'+esc(p.name)+'</span>';
+      h+=' <span class="badge" style="margin-left:8px;color:'+stCol+';background:rgba(255,255,255,.05)">'+p.status+'</span></div>';
+      h+='<div class="flex gap-8">';
+      h+='<button class="btn btn-sm btn-ghost" onclick="Portfolio.copyForResume('+p.id+')">&#x1F4CB; Resume</button>';
+      h+='<button class="btn btn-sm btn-ghost" onclick="Portfolio.rm('+p.id+')" style="padding:4px 8px">\u2715</button>';
+      h+='</div></div>';
+      if(p.tech){h+='<div class="flex gap-8 mt-16" style="flex-wrap:wrap">';
+        p.tech.split(',').forEach(function(t){h+='<span class="badge badge-cyan">'+esc(t.trim())+'</span>';});
+        h+='</div>';}
+      if(p.desc)h+='<p style="color:var(--t2);font-size:13px;margin-top:12px;line-height:1.6">'+esc(p.desc)+'</p>';
+      if(p.link)h+='<a href="'+esc(p.link)+'" target="_blank" style="display:inline-block;margin-top:10px;color:var(--a3);font-size:13px;text-decoration:none">&#x1F517; '+esc(p.link)+'</a>';
+      h+='</div>';
+    });
+    if(!this.data.length)h='<div class="card text-center" style="padding:50px;color:var(--t3)"><p>No projects yet. Add your first project above.</p></div>';
+    $('proj-list').innerHTML=h;
+  },
+  save:function(){saveD('portfolio',this.data);}
+};
+
+/* === Backup & Sync === */
+var Backup={
+  exportData:function(){
+    var keys=['att','dsa','lec','tasks','streak','cgpa','snippets','exams','portfolio'];
+    var exportObj={};
+    keys.forEach(function(k){var v=loadD(k);if(v)exportObj[k]=v;});
+    exportObj._exportedAt=new Date().toISOString();
+    var dataStr='data:text/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(exportObj,null,2));
+    var dlAnchorElem=document.createElement('a');
+    dlAnchorElem.setAttribute('href',dataStr);
+    dlAnchorElem.setAttribute('download','dashboard_backup_'+new Date().getTime()+'.json');
+    document.body.appendChild(dlAnchorElem);dlAnchorElem.click();dlAnchorElem.remove();
+  },
+  importData:function(){
+    var file=$('import-file').files[0];
+    if(!file){alert('Please select a .json backup file first.');return;}
+    if(!confirm('This will OVERWRITE your current data with the imported data. Are you sure?'))return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var data=JSON.parse(e.target.result);
+        if(data._exportedAt)delete data._exportedAt;
+        Object.keys(data).forEach(function(k){saveD(k,data[k]);});
+        alert('Data imported successfully! Reloading...');
+        window.location.reload();
+      }catch(err){alert('Invalid backup file.');}
+    };
+    reader.readAsText(file);
+  },
+  wipeAll:function(){
+    if(!confirm('WARNING: This will delete ALL your dashboard data permanently. Type "YES" to confirm.'))return;
+    var keys=['att','dsa','lec','tasks','streak','cgpa','snippets','exams','portfolio'];
+    keys.forEach(function(k){localStorage.removeItem('pix_'+k);});
+    alert('All data wiped. Reloading...');
+    window.location.reload();
+  }
+};
+
 /* === Overview Updater === */
 function updOverview(){
   /* Attendance avg */
@@ -1182,6 +1711,11 @@ document.addEventListener('DOMContentLoaded',function(){
   Lec.init();
   Tasks.init();
   FocusTimer.init();
+  Streak.init();
+  CGPACalc.init();
+  Snip.init();
+  Exams.init();
+  Portfolio.init();
   updOverview();
 });
 </script>
