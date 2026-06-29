@@ -151,6 +151,19 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
 .att-card:hover{border-color:var(--glass-h)}
 .att-pct{font-size:42px;font-weight:900;letter-spacing:-2px}
 .att-msg{font-size:13px;font-weight:500;margin-top:6px;padding:10px 14px;border-radius:var(--rs)}
+.flip-clock{display:flex;gap:12px;align-items:center;justify-content:center;margin:16px 0}
+.flip-unit{display:flex;flex-direction:column;align-items:center;gap:8px}
+.flip-card{position:relative;width:60px;height:70px;background:var(--bg-elevated);border-radius:6px;font-size:42px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--a1);perspective:400px;border:1px solid var(--glass-b);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.flip-top,.flip-bottom,.flip-top-next,.flip-bottom-next{position:absolute;left:0;width:100%;height:50%;overflow:hidden;display:flex;justify-content:center}
+.flip-top,.flip-top-next{top:0;align-items:flex-end;transform-origin:bottom;border-bottom:1px solid rgba(0,0,0,0.3);border-radius:6px 6px 0 0;background:var(--bg-surface)}
+.flip-bottom,.flip-bottom-next{bottom:0;align-items:flex-start;transform-origin:top;border-radius:0 0 6px 6px;background:var(--bg-surface)}
+.flip-top{z-index:2}
+.flip-bottom{z-index:1}
+.flip-top-next{z-index:1}
+.flip-bottom-next{z-index:2;transform:rotateX(90deg)}
+.flip-card.flipping .flip-top{transform:rotateX(-90deg);transition:transform 0.25s ease-in}
+.flip-card.flipping .flip-bottom-next{transform:rotateX(0deg);transition:transform 0.25s ease-out 0.25s}
+.flip-label{font-size:11px;text-transform:uppercase;color:var(--t2);letter-spacing:1px;font-weight:700}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);z-index:9999;display:flex;align-items:center;justify-content:center}
 .modal-card{width:90%;max-width:400px;background:var(--bg-elevated);border:1px solid var(--glass-b);padding:24px;border-radius:var(--r);animation:modalIn 0.2s ease-out}
 .modal-input{margin-bottom:20px;font-size:16px;background:rgba(255,255,255,.04)!important}
@@ -233,7 +246,7 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
       <div class='stat-lbl'>Pending Tasks</div>
       <div class='stat-val' id='ov-task' style='color:var(--a6)'>--</div></div>
   </div>
-  <div class='g2'>
+  <div class='g3'>
     <div class='card'>
       <h3 style='font-size:16px;font-weight:700;margin-bottom:14px'>Quick Actions</h3>
       <div class='flex flex-col gap-8'>
@@ -246,6 +259,29 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
     <div class='card'>
       <h3 style='font-size:16px;font-weight:700;margin-bottom:14px'>Upcoming Deadlines</h3>
       <div id='ov-deadlines'><p class='empty-state'><br>No upcoming deadlines</p></div>
+    </div>
+    <div class='card flex flex-col items-center justify-center' style='text-align:center;padding:24px 16px'>
+      <h3 style='font-size:16px;font-weight:700;margin-bottom:20px;width:100%;text-align:left'>Focus Timer</h3>
+      <div class='flip-clock' id='f-timer'>
+        <div class='flip-unit'>
+          <div class='flip-card' id='f-min'><div class='flip-top'>25</div><div class='flip-bottom'>25</div><div class='flip-top-next'>25</div><div class='flip-bottom-next'>25</div></div>
+          <div class='flip-label'>MIN</div>
+        </div>
+        <div style='font-size:32px;font-weight:800;color:var(--t2);margin-top:-20px'>:</div>
+        <div class='flip-unit'>
+          <div class='flip-card' id='f-sec'><div class='flip-top'>00</div><div class='flip-bottom'>00</div><div class='flip-top-next'>00</div><div class='flip-bottom-next'>00</div></div>
+          <div class='flip-label'>SEC</div>
+        </div>
+      </div>
+      <div class='flex gap-8 mt-20 justify-center'>
+        <button class='btn btn-sm btn-ghost' onclick='FocusTimer.set(25)'>25m</button>
+        <button class='btn btn-sm btn-ghost' onclick='FocusTimer.set(5)'>5m</button>
+        <button class='btn btn-sm btn-ghost' onclick='FocusTimer.set(15)'>15m</button>
+      </div>
+      <div class='flex gap-12 mt-16 justify-center' style='width:100%'>
+        <button class='btn flex-1 justify-center' id='f-btn' onclick='FocusTimer.toggle()'>&#x25B6; Start</button>
+        <button class='btn btn-ghost' onclick='FocusTimer.reset()'>&#x21BA;</button>
+      </div>
     </div>
   </div>
 </div>
@@ -288,13 +324,18 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator{filter:invert(1)
   <p class='sec-sub'>Upload your daily transit timetable for quick reference</p>
   <div class='card mb-20'>
     <label>Upload Bus Schedule File</label>
-    <div class='upload-zone' id='bus-drop'>
+    <div class='upload-zone' id='bus-drop' style='margin-bottom:20px'>
       <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
         <path d='M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4'/><polyline points='17 8 12 3 7 8'/>
         <line x1='12' y1='3' x2='12' y2='15'/></svg>
       <p>Drop Excel file here or click to browse</p>
       <div class='file-name' id='bus-fname'></div>
       <input type='file' id='bus-file' accept='.xlsx,.xls,.csv' hidden>
+    </div>
+    <label>Or Auto-Fetch from Portal URL</label>
+    <div style='display:flex;gap:12px;margin-top:8px'>
+      <input type='text' id='bus-url' placeholder='https://portal.univ.edu/bus.xlsx' style='flex:1'>
+      <button class='btn btn-ghost' onclick='fetchBusURL()'>&#x21BA; Sync from URL</button>
     </div>
   </div>
   <div class='card' id='bus-results' style='display:none'>
@@ -558,6 +599,26 @@ setupUpload('bus-drop','bus-file','bus-fname',function(wb){
   saveD('bus',rows);
   highlightBus();
 });
+function fetchBusURL(){
+  var url=$('bus-url').value.trim();if(!url)return;
+  $('bus-fname').textContent='Fetching...';
+  fetch(url).then(function(r){if(!r.ok)throw new Error('Network error');return r.arrayBuffer();})
+  .then(function(ab){
+    var wb=XLSX.read(ab,{type:'array',cellDates:true});
+    var ws=wb.Sheets[wb.SheetNames[0]];
+    var rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    $('bus-count').textContent=rows.length+' entries';
+    renderTable($('bus-table'),rows);
+    $('bus-results').style.display='block';
+    saveD('bus',rows);
+    highlightBus();
+    $('bus-fname').textContent='Synced from URL successfully!';
+    saveD('bus-url', url);
+  }).catch(function(e){
+    alert('Could not fetch from URL. The portal might have blocked it (CORS). You can still drag and drop the file manually.\nError: '+e.message);
+    $('bus-fname').textContent='Fetch Failed';
+  });
+}
 function clearBus(){$('bus-results').style.display='none';saveD('bus',null);}
 function highlightBus(){
   var now=new Date(),cm=now.getHours()*60+now.getMinutes(),found=false;
@@ -584,6 +645,7 @@ function highlightBus(){
     $('bus-results').style.display='block';
     setTimeout(highlightBus,100);
   }
+  var u=loadD('bus-url'); if(u) $('bus-url').value=u;
 })();
 
 /* === Attendance (75% Threshold) === */
@@ -1025,6 +1087,41 @@ var Tasks={
   save:function(){saveD('tasks',this.data);}
 };
 
+/* === Focus Timer === */
+var FocusTimer={
+  time:1500, initial:1500, intv:null, running:false,
+  init:function(){this.updateUI(true);},
+  set:function(m){this.time=m*60;this.initial=this.time;this.reset();},
+  toggle:function(){
+    if(this.running){clearInterval(this.intv);this.running=false;$('f-btn').innerHTML='&#x25B6; Start';}
+    else{this.intv=setInterval(this.tick.bind(this),1000);this.running=true;$('f-btn').innerHTML='&#x23F8; Pause';}
+  },
+  reset:function(){clearInterval(this.intv);this.running=false;this.time=this.initial;$('f-btn').innerHTML='&#x25B6; Start';this.updateUI(true);},
+  tick:function(){if(this.time<=0){this.reset();alert('Focus session complete!');return;}this.time--;this.updateUI(false);},
+  updateUI:function(force){
+    var m=Math.floor(this.time/60), s=this.time%60;
+    this.flip('f-min', m<10?'0'+m:m, force);
+    this.flip('f-sec', s<10?'0'+s:s, force);
+  },
+  flip:function(id, val, force){
+    var el=$(id); if(!el)return;
+    var top=el.querySelector('.flip-top'), bot=el.querySelector('.flip-bottom');
+    if(force || top.textContent !== String(val)) {
+      var topN=el.querySelector('.flip-top-next'), botN=el.querySelector('.flip-bottom-next');
+      topN.textContent = val; botN.textContent = val;
+      if(!force) {
+        el.classList.add('flipping');
+        setTimeout(function(){
+          top.textContent=val; bot.textContent=val;
+          el.classList.remove('flipping');
+        }, 250);
+      } else {
+        top.textContent=val; bot.textContent=val;
+      }
+    }
+  }
+};
+
 /* === Overview Updater === */
 function updOverview(){
   /* Attendance avg */
@@ -1068,6 +1165,7 @@ document.addEventListener('DOMContentLoaded',function(){
   DSA.init();
   Lec.init();
   Tasks.init();
+  FocusTimer.init();
   updOverview();
 });
 </script>
