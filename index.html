@@ -1185,23 +1185,6 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
-    /* -- Bus Schedule Card CSS -- */
-    .bus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;padding:8px}
-    .bus-card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-      border:1px solid var(--glass-b);border-radius:var(--r);padding:18px;transition:var(--tr);
-      position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px}
-    .bus-card:hover{border-color:var(--glass-h);transform:translateY(-2px);box-shadow:0 8px 24px rgba(6,182,212,0.15)}
-    .bus-card.next-bus{background:rgba(6,182,212,0.1);border-color:var(--a4);box-shadow:0 0 20px rgba(6,182,212,0.2)}
-    .bus-card.next-bus::before{content:'NEXT BUS';position:absolute;top:12px;right:12px;
-      background:var(--a4);color:#000;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;letter-spacing:1px}
-    .bus-time-badge{display:inline-flex;align-items:center;background:rgba(255,255,255,0.06);
-      padding:6px 12px;border-radius:8px;font-size:16px;font-weight:800;color:var(--a1);font-family:'JetBrains Mono',monospace;width:max-content}
-    .bus-route-flex{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-    .bus-stop-row{display:flex;align-items:center;gap:10px}
-    .bus-stop-lbl{font-size:11px;color:var(--t2);text-transform:uppercase;letter-spacing:1px;width:60px}
-    .bus-stop-val{font-size:14px;font-weight:600;color:var(--t1);flex:1}
-    .bus-divider{height:1px;background:rgba(255,255,255,0.05);margin:4px 0}
   </style>
 </head>
 
@@ -2160,37 +2143,6 @@
       h += '</tbody></table>';
       containerEl.innerHTML = h;
     }
-    function renderBusTable(containerEl,rows){
-      if(!rows||!rows.length){containerEl.innerHTML='<p style="color:var(--t3);text-align:center;padding:20px">No matching records found.</p>';return;}
-      var keys=Object.keys(rows[0]);
-      var h='<div class="bus-grid">';
-      rows.forEach(function(row){
-        h+='<div class="bus-card">';
-        var timeKey=null,timeVal=null;
-        keys.forEach(function(k){
-          var v=String(row[k]).trim();
-          if(v.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i)){
-            if(!timeKey){timeKey=k;timeVal=v;}
-          }
-        });
-        if(timeVal){h+='<div class="bus-time-badge">&#x23F0; '+esc(timeVal)+'</div>';}
-        h+='<div class="bus-route-flex">';
-        var isFirst=true;
-        keys.forEach(function(k){
-          if(k===timeKey)return;
-          var v=row[k];if(v instanceof Date)v=v.toLocaleString();
-          if(!isFirst)h+='<div class="bus-divider"></div>';
-          h+='<div class="bus-stop-row">';
-          h+='  <div class="bus-stop-lbl">'+esc(k)+'</div>';
-          h+='  <div class="bus-stop-val">'+esc(v)+'</div>';
-          h+='</div>';
-          isFirst=false;
-        });
-        h+='</div></div>';
-      });
-      h+='</div>';
-      containerEl.innerHTML=h;
-    }
 
     /* === Batch Data === */
     var batchWB = null;
@@ -2258,7 +2210,7 @@
       var ws = wb.Sheets[wb.SheetNames[0]];
       var rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
       $('bus-count').textContent = rows.length + ' entries';
-      renderBusTable($('bus-table'), rows);
+      renderTable($('bus-table'), rows);
       $('bus-results').style.display = 'block';
       saveD('bus', rows);
       highlightBus();
@@ -2272,7 +2224,7 @@
           var ws = wb.Sheets[wb.SheetNames[0]];
           var rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
           $('bus-count').textContent = rows.length + ' entries';
-          renderBusTable($('bus-table'), rows);
+          renderTable($('bus-table'), rows);
           $('bus-results').style.display = 'block';
           saveD('bus', rows);
           highlightBus();
@@ -2284,34 +2236,28 @@
         });
     }
     function clearBus() { $('bus-results').style.display = 'none'; saveD('bus', null); }
-    function highlightBus(){
-      var now=new Date();
-      var cm=now.getHours()*60+now.getMinutes();
-      var found=false;
-      document.querySelectorAll('#bus-table .bus-card').forEach(function(card){
-        card.classList.remove('next-bus');
-      });
-      document.querySelectorAll('#bus-table .bus-card').forEach(function(card){
-        if(found)return;
-        var m=card.textContent.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i);
-        if(m){
-          var h=parseInt(m[1]),mi=parseInt(m[2]);
-          if(m[3]){
-            if(m[3].toUpperCase()==='PM'&&h!==12)h+=12;
-            if(m[3].toUpperCase()==='AM'&&h===12)h=0;
+    function highlightBus() {
+      var now = new Date(), cm = now.getHours() * 60 + now.getMinutes(), found = false;
+      document.querySelectorAll('#bus-table .dtable tbody tr').forEach(function (row) {
+        row.querySelectorAll('td').forEach(function (td) {
+          var txt = td.textContent.trim();
+          var m = txt.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+          if (m && !found) {
+            var h = parseInt(m[1]), mi = parseInt(m[2]);
+            if (m[3]) {
+              if (m[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+              if (m[3].toUpperCase() === 'AM' && h === 12) h = 0;
+            }
+            if (h * 60 + mi >= cm) { row.style.background = 'rgba(139,92,246,.12)'; row.style.borderLeft = '3px solid var(--a1)'; found = true; }
           }
-          if(h*60+mi>=cm){
-            card.classList.add('next-bus');
-            found=true;
-          }
-        }
+        });
       });
     }
     (function () {
       var d = loadD('bus');
       if (d && d.length) {
         $('bus-count').textContent = d.length + ' entries';
-        renderBusTable($('bus-table'), d);
+        renderTable($('bus-table'), d);
         $('bus-results').style.display = 'block';
         setTimeout(highlightBus, 100);
       }
