@@ -1180,6 +1180,15 @@
 </head>
 
 <body>
+  <div id='xp-bar-container'
+    style='position:fixed;top:0;left:0;width:100%;height:4px;background:var(--bg-elevated);z-index:9999'>
+    <div id='xp-bar-fill'
+      style='height:100%;width:0%;background:var(--a1);box-shadow:0 0 10px var(--a1);transition:width 0.5s ease'></div>
+  </div>
+  <div id='xp-hud'
+    style='position:fixed;top:4px;right:20px;font-size:11px;font-family:JetBrains Mono,monospace;color:var(--a1);z-index:9999;background:rgba(0,0,0,0.5);padding:4px 8px;border-bottom-left-radius:var(--r);border-bottom-right-radius:var(--r)'>
+    LEVEL <span id='xp-level'>1</span> | <span id='xp-val'>0</span> XP
+  </div>
   <canvas id='bg-canvas'></canvas>
   <nav class='sidebar'>
     <div class='logo'>PI</div>
@@ -1335,25 +1344,39 @@
         </div>
       </div>
       <div class='g4 mb-20'>
-        <div class='stat-card'>
-          <div class='stat-icon' style='background:rgba(139,92,246,.12);color:var(--a1)'>&#x1F4CA;</div>
-          <div class='stat-lbl'>Avg Attendance</div>
-          <div class='stat-val' id='ov-att' style='color:var(--a1)'>--</div>
+        <div class='stat-card' style='align-items:center;display:flex;flex-direction:column;padding:16px'>
+          <div class='stat-lbl' style='margin-bottom:12px;text-align:center'>Avg Attendance</div>
+          <div style='position:relative;width:70px;height:70px'>
+            <canvas id='ring-att' width='70' height='70'></canvas>
+            <div id='ov-att'
+              style='position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--a1)'>
+              --</div>
+          </div>
         </div>
-        <div class='stat-card'>
-          <div class='stat-icon' style='background:rgba(59,130,246,.12);color:var(--a3)'>&#x1F9E0;</div>
-          <div class='stat-lbl'>CS Skills Progress</div>
-          <div class='stat-val' id='ov-dsa' style='color:var(--a3)'>--</div>
+        <div class='stat-card' style='align-items:center;display:flex;flex-direction:column;padding:16px'>
+          <div class='stat-lbl' style='margin-bottom:12px;text-align:center'>CS Skills Progress</div>
+          <div style='position:relative;width:70px;height:70px'>
+            <canvas id='ring-dsa' width='70' height='70'></canvas>
+            <div id='ov-dsa'
+              style='position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--a3)'>
+              --</div>
+          </div>
         </div>
-        <div class='stat-card'>
-          <div class='stat-icon' style='background:rgba(6,182,212,.12);color:var(--a4)'>&#x1F4DA;</div>
-          <div class='stat-lbl'>Lecture Depth</div>
-          <div class='stat-val' id='ov-lec' style='color:var(--a4)'>--</div>
+        <div class='stat-card' style='align-items:center;display:flex;flex-direction:column;padding:16px'>
+          <div class='stat-lbl' style='margin-bottom:12px;text-align:center'>Lecture Depth</div>
+          <div style='position:relative;width:70px;height:70px'>
+            <canvas id='ring-lec' width='70' height='70'></canvas>
+            <div id='ov-lec'
+              style='position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--a4)'>
+              --</div>
+          </div>
         </div>
-        <div class='stat-card'>
-          <div class='stat-icon' style='background:rgba(245,158,11,.12);color:var(--a6)'>&#x26A1;</div>
+        <div class='stat-card'
+          style='align-items:center;display:flex;flex-direction:column;justify-content:center;padding:16px'>
+          <div class='stat-icon' style='background:rgba(245,158,11,.12);color:var(--a6);margin-bottom:12px'>&#x26A1;
+          </div>
           <div class='stat-lbl'>Pending Tasks</div>
-          <div class='stat-val' id='ov-task' style='color:var(--a6)'>--</div>
+          <div class='stat-val' id='ov-task' style='color:var(--a6);margin-top:8px'>--</div>
         </div>
       </div>
       <div class='g2'>
@@ -1866,6 +1889,25 @@
         </div>
       </div>
     </div>
+    <div id='jarvis-panel'
+      style='position:fixed;bottom:20px;right:20px;width:320px;background:rgba(10,10,15,0.8);border:1px solid rgba(0,229,255,0.4);border-radius:var(--r);padding:16px;z-index:9998;box-shadow:0 0 20px rgba(0,229,255,0.15);backdrop-filter:blur(10px);display:flex;flex-direction:column;gap:8px'>
+      <div
+        style='font-size:10px;color:var(--a1);font-family:JetBrains Mono,monospace;text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between'>
+        <span>System Observer</span>
+        <span class='blink' style='animation: blinker 1s linear infinite;'>_</span>
+      </div>
+      <div id='jarvis-text'
+        style='font-size:13px;color:var(--t1);font-family:JetBrains Mono,monospace;min-height:40px;line-height:1.5'>
+        Online. Monitoring protocols engaged.
+      </div>
+    </div>
+    <style>
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+    </style>
   </main>
   <script>
     /* === Utility === */
@@ -1891,14 +1933,144 @@
         if (this.cb && val) this.cb(val);
       }
     };
+
     window.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && $('pix-modal').style.display === 'flex') PixModal.submit();
       if (e.key === 'Escape' && $('pix-modal').style.display === 'flex') PixModal.close();
     });
 
+    /* === UI Sounds === */
+    var UISounds = {
+      ctx: null,
+      init: function () { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+      beep: function () {
+        this.init(); if (this.ctx.state === 'suspended') this.ctx.resume();
+        var osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.1);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.1);
+      },
+      whoosh: function () {
+        this.init(); if (this.ctx.state === 'suspended') this.ctx.resume();
+        var osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.2);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+      },
+      chime: function () {
+        this.init(); if (this.ctx.state === 'suspended') this.ctx.resume();
+        var t = this.ctx.currentTime;
+        [523.25, 659.25, 783.99, 1046.50].forEach(function (f, i) {
+          var osc = this.ctx.createOscillator(), gain = this.ctx.createGain();
+          osc.type = 'sine'; osc.frequency.value = f;
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.05, t + 0.05 + i * 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 1.5 + i * 0.05);
+          osc.connect(gain); gain.connect(this.ctx.destination);
+          osc.start(t + i * 0.05); osc.stop(t + 2);
+        }.bind(this));
+      }
+    };
+
+    /* === XP & Leveling System === */
+    var XPSystem = {
+      total: 0, level: 1,
+      init: function () {
+        this.total = loadD('xp') || 0;
+        this.calcLevel();
+        this.updateUI();
+      },
+      add: function (amt, reason) {
+        this.total += amt;
+        saveD('xp', this.total);
+        var oldLvl = this.level;
+        this.calcLevel();
+        this.updateUI();
+        if (this.level > oldLvl) {
+          UISounds.chime();
+          JARVIS.say("LEVEL UP: You are now Level " + this.level + " Cyber-Student.");
+        } else if (reason) {
+          JARVIS.say("XP GAINED: +" + amt + " (" + reason + ")");
+        }
+      },
+      calcLevel: function () {
+        this.level = Math.floor(Math.sqrt(this.total / 50)) + 1;
+      },
+      updateUI: function () {
+        if ($('xp-val')) $('xp-val').textContent = this.total;
+        if ($('xp-level')) $('xp-level').textContent = this.level;
+        var nextLvlXp = Math.pow(this.level, 2) * 50;
+        var prevLvlXp = Math.pow(this.level - 1, 2) * 50;
+        var pct = ((this.total - prevLvlXp) / (nextLvlXp - prevLvlXp)) * 100;
+        if ($('xp-bar-fill')) $('xp-bar-fill').style.width = Math.min(100, Math.max(0, pct)) + '%';
+      }
+    };
+
+    /* === JARVIS System Observer === */
+    var JARVIS = {
+      queue: [], isTyping: false,
+      init: function () {
+        setTimeout(function () { JARVIS.say("Online. Monitoring protocols engaged."); }, 1000);
+      },
+      say: function (text) {
+        this.queue.push(text);
+        this.process();
+      },
+      process: function () {
+        if (this.isTyping || this.queue.length === 0) return;
+        this.isTyping = true;
+        var text = this.queue.shift();
+        var el = $('jarvis-text');
+        if (!el) return;
+        el.textContent = '';
+        var i = 0;
+        var typeInterval = setInterval(function () {
+          el.textContent += text.charAt(i);
+          i++;
+          if (i >= text.length) {
+            clearInterval(typeInterval);
+            setTimeout(function () { JARVIS.isTyping = false; JARVIS.process(); }, 3000);
+          }
+        }, 30);
+      }
+    };
+
+    /* === Telemetry Rings === */
+    var Telemetry = {
+      draw: function (id, pct, color) {
+        var cvs = $(id); if (!cvs) return;
+        var ctx = cvs.getContext('2d');
+        var w = cvs.width, h = cvs.height, r = w / 2 - 4;
+        ctx.clearRect(0, 0, w, h);
+        ctx.beginPath();
+        ctx.arc(w / 2, h / 2, r, 0, Math.PI * 2);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.stroke();
+        if (pct > 0) {
+          ctx.beginPath();
+          ctx.arc(w / 2, h / 2, r, -Math.PI / 2, (Math.PI * 2 * (pct / 100)) - Math.PI / 2);
+          ctx.lineWidth = 4;
+          ctx.strokeStyle = color;
+          ctx.lineCap = 'round';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = color;
+          ctx.stroke();
+        }
+      }
+    };
+
     /* === Navigation === */
     document.querySelectorAll('.nav-item').forEach(function (item) {
       item.addEventListener('click', function () {
+        if (!item.classList.contains('active')) UISounds.whoosh();
+        else UISounds.beep();
         document.querySelectorAll('.nav-item').forEach(function (n) { n.classList.remove('active') });
         document.querySelectorAll('.section').forEach(function (s) { s.classList.remove('active') });
         item.classList.add('active');
@@ -2095,8 +2267,12 @@
         this.save(); this.render();
       },
       upd: function (i, field, val) {
+        var oldAtt = this.data[i].attended;
         this.data[i][field] = Math.max(0, parseInt(val) || 0);
         if (this.data[i].attended > this.data[i].total) this.data[i].attended = this.data[i].total;
+        if (field === 'attended' && this.data[i].attended > oldAtt) {
+          XPSystem.add(5, "Class Attended");
+        }
         this.save(); this.render();
       },
       rm: function (i) { this.data.splice(i, 1); this.save(); this.render(); },
@@ -2470,7 +2646,13 @@
       },
       toggle: function (id) {
         var t = this.data.find(function (x) { return x.id === id; });
-        if (t) t.done = !t.done;
+        if (t) {
+          t.done = !t.done;
+          if (t.done) {
+            UISounds.chime();
+            XPSystem.add(50, "Task Completed");
+          }
+        }
         this.save(); this.render();
       },
       rm: function (id) {
@@ -2535,7 +2717,15 @@
         else { this.intv = setInterval(this.tick.bind(this), 1000); this.running = true; $('f-btn').innerHTML = '&#x23F8; Pause'; }
       },
       reset: function () { clearInterval(this.intv); this.running = false; this.time = this.initial; $('f-btn').innerHTML = '&#x25B6; Start'; this.updateUI(true); },
-      tick: function () { if (this.time <= 0) { this.reset(); alert('Focus session complete!'); return; } this.time--; this.updateUI(false); },
+      tick: function () {
+        if (this.time <= 0) {
+          this.reset();
+          XPSystem.add(Math.floor(this.initial / 60) * 10, "Focus Session Complete");
+          alert('Focus session complete!');
+          return;
+        }
+        this.time--; this.updateUI(false);
+      },
       updateUI: function (force) {
         var h = Math.floor(this.time / 3600), m = Math.floor((this.time % 3600) / 60), s = this.time % 60;
         this.flip('f-hr', h < 10 ? '0' + h : h, force);
@@ -2674,11 +2864,11 @@
         this.resize();
         window.addEventListener('resize', this.resize.bind(this));
         window.addEventListener('mousemove', function (e) { this.mx = e.clientX; this.my = e.clientY; }.bind(this));
-        for (var i = 0; i < 100; i++) this.nodes.push(this.createNode());
+        for (var i = 0; i < 110; i++) this.nodes.push(this.createNode());
         this.anim();
       },
       resize: function () { this.w = this.cvs.width = window.innerWidth; this.h = this.cvs.height = window.innerHeight; },
-      createNode: function () { return { x: Math.random() * this.w, y: Math.random() * this.h, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, r: Math.random() * 1.5 + 1 }; },
+      createNode: function () { return { x: Math.random() * this.w, y: Math.random() * this.h, vx: (Math.random() - 0.5) * 0.7, vy: (Math.random() - 0.5) * 0.7, r: Math.random() * 2.5 + 1.5 }; },
       anim: function () {
         this.ctx.clearRect(0, 0, this.w, this.h);
         for (var i = 0; i < this.nodes.length; i++) {
@@ -2689,26 +2879,26 @@
 
           this.ctx.beginPath();
           this.ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-          this.ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
+          this.ctx.fillStyle = 'rgba(0, 229, 255, 0.8)';
           this.ctx.fill();
 
           for (var j = i + 1; j < this.nodes.length; j++) {
             var n2 = this.nodes[j];
             var dx = n.x - n2.x, dy = n.y - n2.y, d = Math.sqrt(dx * dx + dy * dy);
-            if (d < 120) {
+            if (d < 160) {
               this.ctx.beginPath();
               this.ctx.moveTo(n.x, n.y); this.ctx.lineTo(n2.x, n2.y);
-              this.ctx.strokeStyle = 'rgba(0, 229, 255, ' + (1 - d / 120) * 0.15 + ')';
+              this.ctx.strokeStyle = 'rgba(0, 229, 255, ' + (1 - d / 160) * 0.4 + ')';
               this.ctx.stroke();
             }
           }
           var dmx = n.x - this.mx, dmy = n.y - this.my, md = Math.sqrt(dmx * dmx + dmy * dmy);
-          if (md < 150) {
+          if (md < 200) {
             this.ctx.beginPath();
             this.ctx.moveTo(n.x, n.y); this.ctx.lineTo(this.mx, this.my);
-            this.ctx.strokeStyle = 'rgba(112, 0, 255, ' + (1 - md / 150) * 0.3 + ')';
+            this.ctx.strokeStyle = 'rgba(112, 0, 255, ' + (1 - md / 200) * 0.7 + ')';
             this.ctx.stroke();
-            n.x += dmx * 0.01; n.y += dmy * 0.01;
+            n.x += dmx * 0.015; n.y += dmy * 0.015;
           }
         }
         requestAnimationFrame(this.anim.bind(this));
@@ -3000,22 +3190,43 @@
     /* === Overview Updater === */
     function updOverview() {
       /* Attendance avg */
+      var attPct = 0;
       if (Att.data.length) {
         var sum = 0;
-        Att.data.forEach(function (s) { if (s.total > 0) sum += (s.attended / s.total * 100); });
-        var avg = sum / Att.data.length;
-        $('ov-att').textContent = avg.toFixed(1) + '%';
-      } else { $('ov-att').textContent = '--'; }
+        var needsWarning = false;
+        Att.data.forEach(function (s) {
+          if (s.total > 0) {
+            var p = (s.attended / s.total * 100);
+            sum += p;
+            if (p < 75) needsWarning = true;
+          }
+        });
+        attPct = sum / Att.data.length;
+        if (needsWarning && JARVIS.queue.indexOf("Alert: Attendance in one or more subjects is below 75%.") === -1) {
+          JARVIS.say("Alert: Attendance in one or more subjects is below 75%.");
+        }
+      }
+      $('ov-att').textContent = attPct ? attPct.toFixed(1) + '%' : '--';
+      Telemetry.draw('ring-att', attPct, 'rgba(139,92,246,1)');
+
       /* DSA */
+      var dsaPct = 0;
       if (DSA.data.length) {
         var dn = DSA.data.filter(function (d) { return d.st === 'done'; }).length;
-        $('ov-dsa').textContent = (dn / DSA.data.length * 100).toFixed(0) + '%';
-      } else { $('ov-dsa').textContent = '--'; }
+        dsaPct = (dn / DSA.data.length * 100);
+      }
+      $('ov-dsa').textContent = dsaPct ? dsaPct.toFixed(0) + '%' : '--';
+      Telemetry.draw('ring-dsa', dsaPct, 'rgba(59,130,246,1)');
+
       /* Lectures */
+      var lecPct = 0;
       if (Lec.data.length) {
         var td = 0; Lec.data.forEach(function (l) { td += l.depth; });
-        $('ov-lec').textContent = (td / (Lec.data.length * 5) * 100).toFixed(0) + '%';
-      } else { $('ov-lec').textContent = '--'; }
+        lecPct = (td / (Lec.data.length * 5) * 100);
+      }
+      $('ov-lec').textContent = lecPct ? lecPct.toFixed(0) + '%' : '--';
+      Telemetry.draw('ring-lec', lecPct, 'rgba(6,182,212,1)');
+
       /* Tasks */
       var pending = Tasks.data.filter(function (t) { return !t.done; }).length;
       $('ov-task').textContent = pending;
@@ -3036,6 +3247,8 @@
 
     /* === Init === */
     document.addEventListener('DOMContentLoaded', function () {
+      XPSystem.init();
+      JARVIS.init();
       Att.init();
       DSA.init();
       Lec.init();
