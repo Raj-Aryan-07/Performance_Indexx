@@ -16,27 +16,27 @@
   <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
   <style>
     :root {
-      --bg-base: #09090b;
-      --bg-surface: #18181b;
-      --bg-elevated: #27272a;
-      --glass: rgba(24, 24, 27, 0.7);
-      --glass-b: rgba(255, 255, 255, 0.08);
-      --glass-h: rgba(255, 255, 255, 0.12);
-      --a1: #fafafa;
-      --a2: #a1a1aa;
-      --a3: #3b82f6;
-      --a4: #10b981;
-      --a5: #f59e0b;
-      --a6: #ef4444;
-      --a7: #8b5cf6;
-      --a8: #06b6d4;
-      --t1: #fafafa;
-      --t2: #a1a1aa;
-      --t3: #71717a;
-      --r: 8px;
-      --rs: 6px;
-      --sh: 0 4px 24px rgba(0, 0, 0, 0.4);
-      --tr: all .2s ease;
+      --bg-base: #030305;
+      --bg-surface: #0a0a0f;
+      --bg-elevated: #11111a;
+      --glass: rgba(10, 10, 15, 0.4);
+      --glass-b: rgba(0, 229, 255, 0.15);
+      --glass-h: rgba(0, 229, 255, 0.3);
+      --a1: #00e5ff;
+      --a2: #7000ff;
+      --a3: #00bfff;
+      --a4: #00ffaa;
+      --a5: #f0f0f0;
+      --a6: #ff0055;
+      --a7: #8a2be2;
+      --a8: #00ffff;
+      --t1: #f8f9fa;
+      --t2: #94a3b8;
+      --t3: #475569;
+      --r: 12px;
+      --rs: 8px;
+      --sh: 0 8px 32px rgba(0, 229, 255, 0.1);
+      --tr: all .3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     *,
@@ -78,12 +78,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: rgba(139, 92, 246, .3);
+      background: rgba(0, 229, 255, 0.3);
       border-radius: 3px
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(139, 92, 246, .5)
+      background: rgba(0, 229, 255, 0.5)
     }
 
     .sidebar {
@@ -1094,10 +1094,93 @@
       line-height: 1.5;
       color: var(--a8)
     }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .sec-title:hover {
+      text-shadow: 2px 0 var(--a1), -2px 0 var(--a2);
+      animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+    }
+
+    @keyframes glitch {
+      0% {
+        transform: translate(0)
+      }
+
+      20% {
+        transform: translate(-1px, 1px)
+      }
+
+      40% {
+        transform: translate(-1px, -1px)
+      }
+
+      60% {
+        transform: translate(1px, 1px)
+      }
+
+      80% {
+        transform: translate(1px, -1px)
+      }
+
+      100% {
+        transform: translate(0)
+      }
+    }
+
+    .yt-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--glass-b);
+      border-radius: var(--r);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--tr);
+    }
+
+    .yt-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--sh);
+      border-color: var(--glass-h);
+    }
+
+    .yt-thumb {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #000;
+    }
+
+    .yt-info {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .yt-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
   </style>
 </head>
 
 <body>
+  <canvas id='bg-canvas'></canvas>
   <nav class='sidebar'>
     <div class='logo'>PI</div>
     <div class='nav-items'>
@@ -1157,7 +1240,7 @@
           <polyline points='16 18 22 12 16 6' />
           <polyline points='8 6 2 12 8 18' />
         </svg>
-        <span class='tip'>DSA Matrix</span>
+        <span class='tip'>CS Skills Matrix</span>
       </div>
       <div class='nav-item' data-sec='lectures'>
         <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'
@@ -1216,6 +1299,15 @@
         </svg>
         <span class='tip'>Portfolio</span>
       </div>
+      <div class='nav-item' data-sec='youtube'>
+        <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'
+          stroke-linejoin='round'>
+          <path
+            d='M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33 2.78 2.78 0 001.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.33 29 29 0 00-.46-5.33z' />
+          <polygon points='9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02' />
+        </svg>
+        <span class='tip'>Holo-Vault</span>
+      </div>
       <div class='nav-item' data-sec='settings'>
         <svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'
           stroke-linejoin='round'>
@@ -1250,7 +1342,7 @@
         </div>
         <div class='stat-card'>
           <div class='stat-icon' style='background:rgba(59,130,246,.12);color:var(--a3)'>&#x1F9E0;</div>
-          <div class='stat-lbl'>DSA Progress</div>
+          <div class='stat-lbl'>CS Skills Progress</div>
           <div class='stat-val' id='ov-dsa' style='color:var(--a3)'>--</div>
         </div>
         <div class='stat-card'>
@@ -1273,7 +1365,7 @@
             <button class='btn-ghost btn' onclick='navTo("tasks")' style='width:100%;justify-content:center'>&#x2795;
               Add Task</button>
             <button class='btn-ghost btn' onclick='navTo("dsa")' style='width:100%;justify-content:center'>&#x1F4BB;
-              Update DSA Progress</button>
+              Update CS Skills</button>
             <button class='btn-ghost btn' onclick='navTo("lectures")'
               style='width:100%;justify-content:center'>&#x1F4D6; Update Lectures</button>
           </div>
@@ -1341,7 +1433,10 @@
           <button class='audio-btn' onclick='Ambient.toggle("wind",this)'>&#x1F343; Wind</button>
           <button class='audio-btn' onclick='Ambient.toggle("fire",this)'>&#x1F525; Fire</button>
           <button class='audio-btn' onclick='Ambient.toggle("waves",this)'>&#x1F30A; Waves</button>
+          <button class='audio-btn' onclick='Ambient.toggle("waterfall",this)'>&#x1F4A6; Waterfall</button>
         </div>
+        <canvas id='audio-vis' width='300' height='60'
+          style='margin-top:20px;border-radius:var(--rs);background:rgba(0,0,0,0.3);border:1px solid var(--glass-b)'></canvas>
         <div class='flex items-center justify-center mt-16' style='gap:8px'>
           <span style='font-size:12px;color:var(--t3)'>&#x1F509;</span>
           <input type='range' class='vol-slider' id='amb-vol' min='0' max='100' value='50'
@@ -1379,6 +1474,32 @@
           </div>
           <button class='btn' onclick='parseBatch()' style='width:100%;justify-content:center'>
             &#x1F50D; Extract &amp; Filter</button>
+        </div>
+      </div>
+      <div class='card mb-20'>
+        <h3 style='font-size:16px;font-weight:700;margin-bottom:14px'>Manual Entry</h3>
+        <div class='flex gap-8 mb-16' style='flex-wrap:wrap' id='batch-day-tabs'>
+          <button class='btn btn-sm batch-day-tab' style='background:linear-gradient(135deg,var(--a1),var(--a2))'
+            onclick='setBatchDay("Monday", this)'>Monday</button>
+          <button class='btn btn-sm btn-ghost batch-day-tab' onclick='setBatchDay("Tuesday", this)'>Tuesday</button>
+          <button class='btn btn-sm btn-ghost batch-day-tab' onclick='setBatchDay("Wednesday", this)'>Wednesday</button>
+          <button class='btn btn-sm btn-ghost batch-day-tab' onclick='setBatchDay("Thursday", this)'>Thursday</button>
+          <button class='btn btn-sm btn-ghost batch-day-tab' onclick='setBatchDay("Friday", this)'>Friday</button>
+        </div>
+        <input type='hidden' id='batch-day' value='Monday'>
+        <div class='g3 gap-12' style='align-items:end'>
+          <div><label>Subject Name</label><input type='text' id='batch-m-name' placeholder='Data Structures'></div>
+          <div><label>Subject Code</label><input type='text' id='batch-m-code' placeholder='CS201'></div>
+          <div><label>Timing</label><input type='text' id='batch-m-time' placeholder='10:00 AM - 11:00 AM'></div>
+          <div><label>Class Room</label><input type='text' id='batch-m-room' placeholder='Room 402'></div>
+          <div class='flex gap-12' style='align-items:end'>
+            <div class='flex-1'><label>Type</label><select id='batch-m-type'>
+                <option value='Lecture'>Lecture</option>
+                <option value='Tutorial'>Tutorial</option>
+                <option value='Lab'>Lab</option>
+              </select></div>
+            <button class='btn' onclick='addManualBatchEntry()'>&#x2795; Add</button>
+          </div>
         </div>
       </div>
       <div class='card' id='batch-results' style='display:none'>
@@ -1438,7 +1559,7 @@
       <div id='att-list'></div>
     </div>
     <div id='sec-dsa' class='section'>
-      <h1 class='sec-title'>DSA &amp; Algorithm Matrix</h1>
+      <h1 class='sec-title'>CS Skills Matrix</h1>
       <p class='sec-sub'>Track data structures, algorithms, Big-O complexities &amp; Implementations</p>
       <div class='flex gap-8 mb-16' style='flex-wrap:wrap' id='dsa-tabs'>
         <button class='btn btn-sm dsa-tab' style='background:linear-gradient(135deg,var(--a1),var(--a2))'
@@ -1681,6 +1802,35 @@
       </div>
       <div id='proj-list'></div>
     </div>
+    <div id='sec-youtube' class='section'>
+      <h1 class='sec-title' data-text='YouTube Holo-Vault'>YouTube Holo-Vault</h1>
+      <p class='sec-sub'>Store and organize high-value video resources</p>
+      <div class='card mb-20'>
+        <div class='flex gap-12' style='align-items:end;flex-wrap:wrap'>
+          <div class='flex-1' style='min-width:300px'><label>YouTube Video URL</label><input type='text' id='yt-url'
+              placeholder='https://www.youtube.com/watch?v=...'></div>
+          <div><label>Category</label>
+            <select id='yt-cat'>
+              <option value='Programming'>Programming</option>
+              <option value='Math'>Math</option>
+              <option value='Physics'>Physics</option>
+              <option value='Other'>Other</option>
+            </select>
+          </div>
+          <button class='btn' onclick='YTVault.add()'>&#x2795; Add to Vault</button>
+        </div>
+      </div>
+      <div class='flex gap-8 mb-16' style='flex-wrap:wrap' id='yt-filters'>
+        <button class='btn btn-sm yt-filt-btn' style='background:var(--glass-h)'
+          onclick='YTVault.filter("All", this)'>All</button>
+        <button class='btn btn-sm btn-ghost yt-filt-btn'
+          onclick='YTVault.filter("Programming", this)'>Programming</button>
+        <button class='btn btn-sm btn-ghost yt-filt-btn' onclick='YTVault.filter("Math", this)'>Math</button>
+        <button class='btn btn-sm btn-ghost yt-filt-btn' onclick='YTVault.filter("Physics", this)'>Physics</button>
+        <button class='btn btn-sm btn-ghost yt-filt-btn' onclick='YTVault.filter("Other", this)'>Other</button>
+      </div>
+      <div class='g3' id='yt-grid'></div>
+    </div>
     <div id='sec-settings' class='section'>
       <h1 class='sec-title'>Settings & Backup</h1>
       <p class='sec-sub'>Manage your data and dashboard settings</p>
@@ -1836,6 +1986,34 @@
       saveD('batch', { bid: bid, data: filtered });
     }
     function clearBatch() { $('batch-results').style.display = 'none'; saveD('batch', null); }
+    function setBatchDay(day, btn) {
+      $('batch-day').value = day;
+      document.querySelectorAll('.batch-day-tab').forEach(function (b) {
+        b.style.background = 'rgba(255,255,255,.05)';
+        b.classList.add('btn-ghost');
+      });
+      btn.style.background = 'linear-gradient(135deg,var(--a1),var(--a2))';
+      btn.classList.remove('btn-ghost');
+    }
+    function addManualBatchEntry() {
+      var b = loadD('batch') || { bid: 'Manual', data: [] };
+      if (!b.data) b.data = [];
+      var day = $('batch-day').value;
+      var name = $('batch-m-name').value.trim();
+      var code = $('batch-m-code').value.trim();
+      var time = $('batch-m-time').value.trim();
+      var room = $('batch-m-room').value.trim();
+      var type = $('batch-m-type').value;
+      if (!name) return alert('Subject Name required');
+      b.data.push({
+        "Day": day, "Subject": name, "Code": code, "Timing": time, "Room": room, "Type": type
+      });
+      $('batch-count').textContent = b.data.length + ' rows';
+      renderTable($('batch-table'), b.data);
+      $('batch-results').style.display = 'block';
+      saveD('batch', b);
+      $('batch-m-name').value = ''; $('batch-m-code').value = ''; $('batch-m-time').value = ''; $('batch-m-room').value = '';
+    }
     (function () {
       var d = loadD('batch');
       if (d && d.data && d.data.length) {
@@ -2385,7 +2563,7 @@
 
     /* === Ambient Audio === */
     var Ambient = {
-      ctx: null, current: null, activeBtn: null, gainNode: null,
+      ctx: null, current: null, activeBtn: null, gainNode: null, analyser: null, visCtx: null,
       noise: function (type) {
         if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         var ctx = this.ctx, bufSize = 2 * ctx.sampleRate;
@@ -2395,6 +2573,7 @@
         for (i = 0; i < bufSize; i++) {
           var w = Math.random() * 2 - 1;
           if (type === 'rain') { b0 = 0.99886 * b0 + w * 0.0555179; b1 = 0.99332 * b1 + w * 0.0750759; b2 = 0.969 * b2 + w * 0.153852; d[i] = (b0 + b1 + b2 + w * 0.5362) * 0.11; }
+          else if (type === 'waterfall') { b0 = 0.998 * b0 + w * 0.05; b1 = 0.99 * b1 + w * 0.05; d[i] = (b0 + b1 + w * 0.5) * 0.08; }
           else if (type === 'cafe') { b0 = 0.998 * b0 + w * 0.02; d[i] = (b0 + w * 0.1) * 0.4; }
           else if (type === 'wind') { d[i] = w * 0.3 * Math.sin(i / ctx.sampleRate * 0.3); }
           else if (type === 'fire') { d[i] = w * (Math.random() > 0.98 ? 0.6 : 0.08); }
@@ -2409,8 +2588,11 @@
         if (this.activeBtn === btn) { this.activeBtn = null; return; }
         if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         this.gainNode = this.ctx.createGain();
+        this.analyser = this.ctx.createAnalyser();
+        this.analyser.fftSize = 64;
         this.gainNode.gain.value = ($('amb-vol').value || 50) / 100;
-        this.gainNode.connect(this.ctx.destination);
+        this.gainNode.connect(this.analyser);
+        this.analyser.connect(this.ctx.destination);
         var src = this.ctx.createBufferSource();
         src.buffer = this.noise(type);
         src.loop = true;
@@ -2419,8 +2601,118 @@
         this.current = src;
         btn.classList.add('active');
         this.activeBtn = btn;
+        this.drawVis();
       },
-      setVol: function (v) { if (this.gainNode) this.gainNode.gain.value = v / 100; }
+      setVol: function (v) { if (this.gainNode) this.gainNode.gain.value = v / 100; },
+      drawVis: function () {
+        if (!this.current) return;
+        var cvs = $('audio-vis'); if (!cvs) return;
+        if (!this.visCtx) this.visCtx = cvs.getContext('2d');
+        var data = new Uint8Array(this.analyser.frequencyBinCount);
+        this.analyser.getByteFrequencyData(data);
+        var ctx = this.visCtx;
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        var barW = (cvs.width / data.length) * 2.5;
+        var x = 0;
+        for (var i = 0; i < data.length; i++) {
+          var barH = data[i] / 2;
+          ctx.fillStyle = 'rgba(0, 229, 255, ' + (barH / 128 + 0.1) + ')';
+          ctx.fillRect(x, cvs.height - barH, barW, barH);
+          x += barW + 1;
+        }
+        requestAnimationFrame(this.drawVis.bind(this));
+      }
+    };
+
+    /* === YouTube Vault === */
+    var YTVault = {
+      data: [], currentFilter: 'All',
+      init: function () { this.data = loadD('ytvault') || []; this.render(); },
+      add: function () {
+        var url = $('yt-url').value.trim();
+        var cat = $('yt-cat').value;
+        if (!url) return;
+        var vidMatch = url.match(/(?:v=|youtu\.be\/)([^&]+)/);
+        if (!vidMatch) { alert('Please enter a valid YouTube Video URL'); return; }
+        var vID = vidMatch[1];
+        var thumb = 'https://i.ytimg.com/vi/' + vID + '/hqdefault.jpg';
+        this.data.unshift({ id: Date.now(), url: url, vid: vID, cat: cat, thumb: thumb });
+        this.save(); $('yt-url').value = ''; this.render();
+      },
+      remove: function (id) { this.data = this.data.filter(function (i) { return i.id !== id; }); this.save(); this.render(); },
+      filter: function (f, btn) {
+        this.currentFilter = f;
+        document.querySelectorAll('.yt-filt-btn').forEach(function (b) { b.classList.add('btn-ghost'); b.style.background = ''; });
+        btn.classList.remove('btn-ghost'); btn.style.background = 'var(--glass-h)';
+        this.render();
+      },
+      render: function () {
+        var _this = this;
+        var d = this.data.filter(function (i) { return _this.currentFilter === 'All' || i.cat === _this.currentFilter; });
+        var h = '';
+        d.forEach(function (i) {
+          h += '<div class="yt-card">';
+          h += '<img src="' + i.thumb + '" class="yt-thumb">';
+          h += '<div class="yt-info">';
+          h += '<div class="flex justify-between items-center mb-8"><span class="badge badge-purple">' + i.cat + '</span><button class="btn-ghost btn-sm" onclick="YTVault.remove(' + i.id + ')">\u2715</button></div>';
+          h += '<div class="yt-title"><a href="' + i.url + '" target="_blank" style="color:var(--t1);text-decoration:none">' + i.url + '</a></div>';
+          h += '</div></div>';
+        });
+        if (!d.length) h = '<div class="card text-center" style="grid-column:1/-1;color:var(--t3);padding:40px">No videos saved in this category.</div>';
+        $('yt-grid').innerHTML = h;
+      },
+      save: function () { saveD('ytvault', this.data); }
+    };
+
+    /* === Background Canvas === */
+    var BgCanvas = {
+      cvs: null, ctx: null, nodes: [], w: 0, h: 0, mx: -1000, my: -1000,
+      init: function () {
+        this.cvs = $('bg-canvas');
+        if (!this.cvs) return;
+        this.ctx = this.cvs.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', this.resize.bind(this));
+        window.addEventListener('mousemove', function (e) { this.mx = e.clientX; this.my = e.clientY; }.bind(this));
+        for (var i = 0; i < 100; i++) this.nodes.push(this.createNode());
+        this.anim();
+      },
+      resize: function () { this.w = this.cvs.width = window.innerWidth; this.h = this.cvs.height = window.innerHeight; },
+      createNode: function () { return { x: Math.random() * this.w, y: Math.random() * this.h, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, r: Math.random() * 1.5 + 1 }; },
+      anim: function () {
+        this.ctx.clearRect(0, 0, this.w, this.h);
+        for (var i = 0; i < this.nodes.length; i++) {
+          var n = this.nodes[i];
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < 0 || n.x > this.w) n.vx *= -1;
+          if (n.y < 0 || n.y > this.h) n.vy *= -1;
+
+          this.ctx.beginPath();
+          this.ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          this.ctx.fillStyle = 'rgba(0, 229, 255, 0.4)';
+          this.ctx.fill();
+
+          for (var j = i + 1; j < this.nodes.length; j++) {
+            var n2 = this.nodes[j];
+            var dx = n.x - n2.x, dy = n.y - n2.y, d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 120) {
+              this.ctx.beginPath();
+              this.ctx.moveTo(n.x, n.y); this.ctx.lineTo(n2.x, n2.y);
+              this.ctx.strokeStyle = 'rgba(0, 229, 255, ' + (1 - d / 120) * 0.15 + ')';
+              this.ctx.stroke();
+            }
+          }
+          var dmx = n.x - this.mx, dmy = n.y - this.my, md = Math.sqrt(dmx * dmx + dmy * dmy);
+          if (md < 150) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(n.x, n.y); this.ctx.lineTo(this.mx, this.my);
+            this.ctx.strokeStyle = 'rgba(112, 0, 255, ' + (1 - md / 150) * 0.3 + ')';
+            this.ctx.stroke();
+            n.x += dmx * 0.01; n.y += dmy * 0.01;
+          }
+        }
+        requestAnimationFrame(this.anim.bind(this));
+      }
     };
 
     /* === Code Streak === */
@@ -2754,6 +3046,8 @@
       Snip.init();
       Exams.init();
       Portfolio.init();
+      YTVault.init();
+      BgCanvas.init();
       updOverview();
     });
   </script>
